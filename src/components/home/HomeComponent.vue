@@ -1,8 +1,6 @@
 <template>
 	<FullHeightComponent>
-		<div class="flex items-center justify-center h-full">
-			hi
-		</div>
+		<HeaderComponent />
 	</FullHeightComponent>
 </template>
 
@@ -10,5 +8,6 @@
 import { ref } from 'vue';
 import FullHeightComponent from '@/src/components/utils/FullHeightComponent.vue';
 import SelectButton from 'primevue/selectbutton';
+import HeaderComponent from '@/src/components/home/HeaderComponent.vue';
 
 </script>

@@ -8,19 +8,18 @@
       :id="id" 
       :type="type" 
       :placeholder="placeholder" 
-      v-model="props.modelValue" 
+      v-model="internalValue" 
 			:mask="mask"
-			:invalid="isInvalid"
 			v-if="mask !== undefined"
     />
 		<InputText 
       :id="id" 
       :type="type" 
       :placeholder="placeholder" 
-      v-model="props.modelValue" 
-			:invalid="isInvalid"
+      v-model="internalValue" 
 			v-else
     />
+    <div class="text-red-500 text-xs font-semibold" v-if="errorMessage.length !== 0">{{ errorMessage }}</div>
   </div>
 </template>
 
@@ -28,7 +27,6 @@
 import { ref, watch } from 'vue';
 import InputMask from 'primevue/inputmask';
 import InputText from 'primevue/inputtext';
-import FormField from '@/src/components/utils/interfaces';
 
 const props = defineProps({
   id: String,
@@ -38,7 +36,6 @@ const props = defineProps({
   isRequired: Boolean,
   label: String,
 	mask: String,
-	isInvalid: Boolean,
 	errorMessage: String,
 });
 
