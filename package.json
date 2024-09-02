@@ -10,6 +10,11 @@
   },
   "dependencies": {
     "@primevue/themes": "^4.0.4",
+    "@types/js-cookie": "^3.0.6",
+    "axios": "^1.7.5",
+    "dayjs": "^1.11.13",
+    "dayjs-plugin-utc": "^0.1.2",
+    "js-cookie": "^3.0.5",
     "primeicons": "^7.0.0",
     "primevue": "^4.0.4",
     "vue": "^3.4.35",
@@ -17,7 +22,9 @@
   },
   "devDependencies": {
     "@types/node": "^22.3.0",
+    "@types/vue": "^1.0.31",
     "@vitejs/plugin-vue": "^5.1.2",
+    "@vue/compiler-sfc": "^3.4.38",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.9.0",
     "eslint-plugin-vue": "^9.27.0",

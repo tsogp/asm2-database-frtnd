@@ -12,7 +12,8 @@
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
     "types": ["vite/client"],
-		"baseUrl": "./"
+		"baseUrl": "./",
+    "paths": { "@/*": ["./*"] },
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "exclude": ["node_modules"]

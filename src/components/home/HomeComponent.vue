@@ -1,13 +1,13 @@
 <template>
 	<FullHeightComponent>
-		<HeaderComponent />
+    <div class="flex flex-col h-full">
+      <HeaderComponent />
+      <router-view />
+    </div>
 	</FullHeightComponent>
 </template>
 
-<script setup>
-import { ref } from 'vue';
+<script setup lang="ts">
 import FullHeightComponent from '@/src/components/utils/FullHeightComponent.vue';
-import SelectButton from 'primevue/selectbutton';
 import HeaderComponent from '@/src/components/home/HeaderComponent.vue';
-
 </script>

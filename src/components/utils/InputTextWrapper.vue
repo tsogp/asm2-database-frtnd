@@ -19,11 +19,11 @@
       v-model="internalValue" 
 			v-else
     />
-    <div class="text-red-500 text-xs font-semibold" v-if="errorMessage.length !== 0">{{ errorMessage }}</div>
+    <div class="text-red-500 text-xs font-semibold" v-if="errorMessage?.length !== 0">{{ errorMessage }}</div>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch } from 'vue';
 import InputMask from 'primevue/inputmask';
 import InputText from 'primevue/inputtext';

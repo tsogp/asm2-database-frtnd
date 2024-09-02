@@ -1,5 +1,6 @@
 <template>
 	<FullHeightComponent>
+    <Toast />
 		<div class="flex items-center justify-center h-full">
 			<Card style="width: 25rem; overflow: hidden">
 				<template #header>
@@ -43,16 +44,6 @@
 							:errorMessage="emailError"
 						/>
 						<InputTextWrapper 
-							v-model="phone" 
-							id="phone" 
-							type="text" 
-							placeholder="(999)-999-9999" 
-							:isRequired="false" 
-							label="Phone Number"
-							mask="(999)-999-9999"
-							:errorMessage="phoneError"
-						/>
-						<InputTextWrapper 
 							v-model="password" 
 							id="password" 
 							type="password" 
@@ -68,7 +59,7 @@
 							label="Repeat Password" 
 							:errorMessage="passwordError"
 						/>
-						<InputTextWrapper 
+						<!-- <InputTextWrapper 
 							v-model="firstName" 
 							id="firstName" 
 							type="text" 
@@ -85,7 +76,7 @@
 							label="Last Name"
 							placeholder="The Desirerer"
 							:errorMessage="lastNameError" 
-						/>
+						/> -->
 					</div>
 				</template>
 				<template #footer>
@@ -104,11 +95,15 @@
 	</FullHeightComponent>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import FullHeightComponent from '@/src/components/utils/FullHeightComponent.vue';
 import Button from 'primevue/button';
-import InputTextWrapper from '../utils/InputTextWrapper.vue';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+import InputTextWrapper from '@/src/components/utils/InputTextWrapper.vue';
+import loginService from '@/src/services/LoginService/LoginService';
+import registerService from '@/src/services/RegisterService/RegisterService';
 import Card from 'primevue/card';
 import SelectButton from 'primevue/selectbutton';
 import { SignUpTypes, SignUpRoles } from './mappings';
@@ -125,13 +120,13 @@ const password = ref('');
 const repeatPassword = ref('');
 const firstName = ref('');
 const lastName = ref('');
-const phone = ref(null);
 
 const emailError = ref('');
 const passwordError = ref('');
 const firstNameError = ref('');
 const lastNameError = ref('');
-const phoneError = ref('');
+
+const toast = useToast();
 
 watch(() => signUpType.value, (value) => {
 	if (value === SignUpTypes.REGISTER) {
@@ -139,9 +134,7 @@ watch(() => signUpType.value, (value) => {
 	}
 });
 
-const ifNoFormErrors = () => {
-	return emailError.value === '' && passwordError.value === '' && firstNameError.value === '' && lastNameError.value === '' && phoneError.value === '';
-}
+const ifFormErrors = computed(() => !(emailError.value === '' && passwordError.value === ''));
 
 const validate = () => {
 	if (signUpType.value === SignUpTypes.REGISTER) {
@@ -159,32 +152,50 @@ const validate = () => {
 			passwordError.value = '';
 		}
 
-		if (firstName.value === '') {
-			firstNameError.value = 'First Name is required';
-		} else {
-			firstNameError.value = '';
-		}
+		// if (firstName.value === '') {
+		// 	firstNameError.value = 'First Name is required';
+		// } else {
+		// 	firstNameError.value = '';
+		// }
 
-		if (lastName.value === '') {
-			lastNameError.value = 'Last Name is required';
-		} else {
-			lastNameError.value = '';
-		}
-		
-		console.log(phoneError.value);
-		if (phone.value.length !== 0 && phone.value.length !== 10) {
-			phoneError.value = 'Phone number must be 10 digits';
-		} else {
-			phoneError.value = '';
-		}
+		// if (lastName.value === '') {
+		// 	lastNameError.value = 'Last Name is required';
+		// } else {
+		// 	lastNameError.value = '';
+		// }
 	}
 };
 
-const handleSignup = () => {
+const onLoginSuccess = () => {
+  router.push("/");
+} 
+
+const onLoginFailure = (errorMsg: string) => {
+  toast.add({ severity: 'error', summary: 'Login failed.', detail: errorMsg, life: 5000 });
+}
+
+const onRegisterSuccess = () => {
+  password.value = '';
+  signUpType.value = SignUpTypes.LOGIN;
+  toast.add({ severity: 'success', summary: 'Sign up was successful.', detail: 'Log in to enter your account.', life: 5000 });
+}
+
+const onRegisterFailure = (errorMsg: string) => {
+  toast.add({ severity: 'error', summary: 'Sign up failed.', detail: errorMsg, life: 5000 });
+}
+
+const handleSignup = async () => {
 	validate();
-	if (!ifNoFormErrors()) {
+
+  if (ifFormErrors.value) {
 		return;
-	}
-	router.push('/');
+  }
+
+  const response = (signUpType.value === SignUpTypes.LOGIN) 
+    ? (signUpRole.value === SignUpRoles.PATIENT)
+      ? await loginService.patientLogin(email.value, password.value, onLoginSuccess, onLoginFailure)
+      : await loginService.staffLogin(email.value, password.value, onLoginSuccess, onLoginFailure)
+    : await registerService.registerPatient(email.value, password.value, onRegisterSuccess, onRegisterFailure);
 };
+
 </script>
