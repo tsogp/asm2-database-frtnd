@@ -1,6 +1,6 @@
 import requestService, { RequestServiceType } from "@/src/services/RequestService";
 import { AxiosError } from "axios";
-import { AppointmentRequest, AppointmentResponse } from "@/src/services/AppointmentService/interfaces";
+import { AppointmentRequest, AppointmentResponse, CancelAppointmentRequest } from "@/src/services/AppointmentService/interfaces";
 
 class AppointmentService {
   private requestService: RequestServiceType;
@@ -9,7 +9,7 @@ class AppointmentService {
     this.requestService = requestService;
   }
 
-  public async getPatientsAppointments(request: AppointmentRequest, onFailure: (errorMsg: string) => void): Promise<AppointmentResponse | undefined> {
+  public async getPatientsAppointments(request: AppointmentRequest, onFailure: (errorMsg: string) => void): Promise<AppointmentResponse> {
     try {
       const params = request;
 
@@ -19,9 +19,24 @@ class AppointmentService {
           { params }
         );
 
-      return response.data;
+      return response?.data ?? [];
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error)
+      throw(error);
+    }
+  }
+
+  public async cancelAppointment(request: CancelAppointmentRequest, onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
+    try {
+      const response =  
+        await this.requestService.putWithAuth<void>(
+          '/appointment/cancel', request
+        );
+      
+      onSuccess();
+    } catch (error) {
+      onFailure(((error as AxiosError).response?.data as any).error)
+      throw(error);
     }
   }
 }

@@ -9,13 +9,14 @@ class FileService {
     this.requestService = requestService;
   }
 
-  public async getStaffAvatar(request: FileRequest, onFailure: (errorMsg: string) => void): Promise<AvatarResponse | undefined> {
+  public async getStaffAvatar(request: FileRequest, onFailure: (errorMsg: string) => void): Promise<AvatarResponse> {
     try {
       const metadataResponse = await this.requestService.getWithAuth<FileResponse>('/files/meta/staff', { params: request }) 
       const pictureResponse = await this.requestService.getWithAuth<AvatarResponse>('/files/content/staff/' + metadataResponse.data.result[0].filename)
       return pictureResponse.data;
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error)
+      throw(error);
     }
   }
 }

@@ -12,12 +12,24 @@ export interface Appointment {
   staff_id: number;
   treatments: string;
   purpose: string;
+  status: string;
+}
+
+export interface Treatment {
+  id: number,
+  name: string,
+  date: Dayjs,
 }
 
 export interface AppointmentRequest {
   status?: string; 
   page: number;
   limit: number;
+}
+
+export interface CancelAppointmentRequest {
+  patient_id: number;
+  appointment_id: number;
 }
 
 export interface AppointmentResponse {
