@@ -1,7 +1,7 @@
 import requestService, { RequestServiceType } from "@/src/services/RequestService";
 import { AxiosError } from "axios";
 import { IUser, UserResponse } from "./interfaces";
-import dayjs, { Dayjs } from "dayjs";
+import dayjs, { Dayjs, isDayjs } from "dayjs";
 import router from "@/src/router";
 
 class LoginService {
@@ -11,11 +11,35 @@ class LoginService {
   constructor() {
     this.requestService = requestService;
     this.user = localStorage.getItem('user') !== null
-      ? JSON.parse(localStorage.getItem('user') ?? '')
+      // @ts-ignore
+      ? JSON.parse(localStorage.getItem('user'))
       : null;
   }
 
   public async patientLogin(email: string, password: string, onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
+    try {
+      await this.requestService.postWithAuth<null>('/auth/login', 
+        {
+          email,
+          password
+        },
+      );
+
+      const response = await this.requestService.getWithAuth<UserResponse>('/patient/myInfo');
+      
+      this.user = {
+        ...response.data,
+        role: 'patient',
+      };
+      localStorage.setItem('user', JSON.stringify(this.user));
+
+      onSuccess();
+    } catch (error) {
+      onFailure(((error as AxiosError).response?.data as any).error);
+    }
+  }
+
+  public async userUpdateData( onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
     try {
       await this.requestService.postWithAuth<null>('/auth/patient/login', 
         {
@@ -36,7 +60,7 @@ class LoginService {
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error);
     }
-  }
+  } 
 
   public async staffLogin(email: string, password: string, onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
     try {
@@ -83,32 +107,45 @@ class LoginService {
     localStorage.removeItem('user');
   }
 
-  public getUserFirstName(): string {
-    return this.user?.first_name ?? '';
+  public getUserFirstName(): string | null {
+    return this.user?.first_name ?? null;
   }
 
-  public getUserLastName(): string {
-    return this.user?.last_name ?? '';
+  public getUserLastName(): string | null {
+    return this.user?.last_name ?? null;
   }
 
-  public getUserGender(): string {
-    return this.user?.gender ?? '';
+  public getUserGender(): {code: string | null, name: string | null} {
+    enum Gender {
+      'M' = 'Male',
+      'F' = 'Female',
+      'O' = 'Other'
+    }
+
+    return { 
+      code: this.user?.gender ?? null, 
+      name: this.user?.gender ? Gender[this.user.gender as keyof typeof Gender] : null  
+    };
   }
 
-  public getUserEmail(): string {
-    return this.user?.email ?? '';
+  public getUserEmail(): string | null {
+    return this.user?.email ?? null;
   }
 
-  public getUserDOB(): Dayjs {
-    return this.user?.date_of_birth ?? dayjs();
+  public getUserDOB(): Date | null {
+    return new Date(this.user?.date_of_birth ?? '') ?? null;
   }
 
-  public getUserAllergies(): string[] {
-    return this.user?.allergies ?? [];
+  public getUserAllergies(): string | null{
+    return this.user?.allergies ?? null;
   }
 
-  public getUserID(): number {
-    return this.user?.patient_id ?? 0;
+  public getUserID(): number | null {
+    return this.user?.patient_id ?? null;
+  }
+
+  public getUserRole(): string | null {
+    return this.user?.role ?? null;
   }
 }
 

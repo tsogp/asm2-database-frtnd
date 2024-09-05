@@ -96,7 +96,7 @@
         <Button label="Cancel" icon="pi pi-times" outlined @click="cancelDialogVisible = false" />
         <Button label="I am sure" icon="pi pi-check" outlined severity="danger" @click="handleCancelAppointment(
           appointmentData.at(currentAppointmentIndex)?.appointment_id ?? 0,
-          loginService.getUserID(),
+          loginService.getUserID() ?? 0,
         )" />
       </div>
     </template>
@@ -192,6 +192,7 @@ const fetchStaffAvatars = async () => {
   );
 
   staffAvatars.value = new Map<number, AvatarResponse>(
+    // @ts-ignore
     await Promise.all(promises)
   );
 

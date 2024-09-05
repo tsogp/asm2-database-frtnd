@@ -4,3 +4,8 @@ export interface DefaultPagination {
   totalPages: number;
   totalRecords: number; 
 }
+
+export interface DefaultPaginationRequest {
+  page: number;
+  limit: number;
+}

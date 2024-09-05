@@ -27,11 +27,6 @@ const routes = [
         component: AboutUsComponent,
       },
       {
-        path: 'departments',
-        name: 'Departments',
-        component: DepartmentsComponent,
-      },
-      {
         path: 'doctors',
         name: 'Doctors',
         component: DoctorsComponent,
