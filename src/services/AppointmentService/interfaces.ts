@@ -10,7 +10,6 @@ export interface Appointment {
   staff_first_name: string;
   staff_last_name: string; 
   staff_id: number;
-  treatments: string;
   purpose: string;
   status: string;
 }

@@ -28,7 +28,8 @@
         <SplitButton :model="profileItems" outlined severity="secondary" v-if="loginService.isAuthenticated()" @click="editDialogVisible = true">
           <span class="flex items-center font-bold">
             <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" shape="circle"
-              style="height: 80%; margin-right: 0.5rem" v-if="loginService.getUserRole() !== 'patient'"/>
+            style="height: 80%; margin-right: 0.5rem" v-if="loginService.getUserRole() !== 'patient'"/>
+            <Avatar icon="pi pi-user" class="mr-2" size="xlarge" shape="circle" v-else />
             <span>{{loginService.getUserFirstName()}} {{loginService.getUserLastName()}}</span>
           </span>
         </SplitButton>
@@ -38,28 +39,22 @@
   </Menubar>
   <Dialog v-model:visible="editDialogVisible" header="Edit Personal Data" modal style="min-width: 300px;">
     <InputTextWrapper 
-      v-model="userEmail" 
-      id="email" 
-      type="text" 
-      placeholder="email@email.com" 
-      :isRequired="true" 
-      label="Email" 
-    />
-    <InputTextWrapper 
       v-model="userFirstName" 
       id="text" 
       type="text" 
-      placeholder="Joun" 
-      :isRequired="true" 
+      placeholder="Joun"  
       label="First Name" 
+      :is-required="true"
+      :error-message="firstNameError"
     />
     <InputTextWrapper 
       v-model="userLastName" 
       id="email" 
       type="text" 
-      placeholder="Pham" 
-      :isRequired="true" 
-      label="Last Name" 
+      placeholder="Pham"  
+      label="Last Name"
+      :is-required="true"
+      :error-message="lastNameError"
     />
     <InputTextWrapper
       v-model="userAllergies" 
@@ -69,23 +64,24 @@
       label="Allergies" 
     />
     <div class="flex flex-row gap-x-1 my-2 items-center">
-			<i class="pi pi-star-fill" style="color: red; font-size: 0.5rem" />
 			<label for="dob" class="font-semibold">Date of Birth</label>
 		</div>
     <DatePicker id="dob" v-model="userDOB" class="w-full" dateFormat="dd/mm/yy" />
-    <div class="flex flex-row my-2 items-center">
+    <div class="flex flex-row my-2 items-center gap-x-1">
+      <i class="pi pi-star-fill" style="color: red; font-size: 0.5rem" />
 			<label for="gender" class="font-semibold">Gender</label>
 		</div>
     <Select id="gender" v-model="userGender" :options="userGenders" optionLabel="name" placeholder="Select you gender" class="w-full" />
+    <div class="text-red-500 text-xs font-semibold" v-if="genderError?.length !== 0">{{ genderError }}</div>
     <template #footer>
-      <Button label="Cancel" icon="pi pi-times" outlined severity="danger" @click="editDialogVisible = false" />
-      <Button label="Save" icon="pi pi-bookmark" outlined @click="editDialogVisible = false" />
+      <Button label="Cancel" icon="pi pi-times" outlined severity="danger" @click="editDialogVisible = false" :disabled="loading" />
+      <Button label="Save" :icon="`pi ${loading ? 'pi-spin pi-spinner' : 'pi-bookmark'}`" outlined @click="sendData" :disabled="loading" />
     </template>
   </Dialog>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Menubar from "primevue/menubar";
 import SplitButton from "primevue/splitbutton";
 import Badge from "primevue/badge";
@@ -101,6 +97,7 @@ import { MenuItem } from "primevue/menuitem";
 import router from "@/src/router";
 import { useToast } from "primevue/usetoast";
 import InputTextWrapper from "../utils/InputTextWrapper.vue";
+import { UpdateUserRequest } from "@/src/services/LoginService/interfaces";
 
 const items = ref<MenuItem[]>([
   {
@@ -131,12 +128,17 @@ const toast = useToast();
 
 const editDialogVisible = ref(false);
 
-const userEmail = ref(loginService.getUserEmail() ?? '');
-const userDOB = ref(loginService.getUserDOB() ?? '');
+const loading = ref(false);
+
+const userDOB = ref(loginService.getUserDOB());
 const userFirstName = ref(loginService.getUserFirstName() ?? '');
 const userLastName = ref(loginService.getUserLastName() ?? '');
 const userAllergies = ref(loginService.getUserAllergies() ?? '');
 const userGender = ref(loginService.getUserGender());
+
+const firstNameError = ref('');
+const lastNameError = ref('');
+const genderError = ref('');
 
 const userGenders = ref([
   {
@@ -168,4 +170,57 @@ const profileItems = ref([
     )
   }
 ]);
+
+const ifFormErrors = computed(() => !(firstNameError.value === '' && lastNameError.value === '' && genderError.value === ''));
+
+const validate = () => {
+  if (userFirstName.value === '') {
+    firstNameError.value = 'First Name is required';
+  } else {
+    firstNameError.value = '';
+  }
+
+  if (userLastName.value === '') {
+    lastNameError.value = 'Last Name is required';
+  } else {
+    lastNameError.value = '';
+  }
+
+  if (userGender.value === null) {
+    genderError.value = 'Gender is required';
+  } else {
+    genderError.value = '';
+  }
+}
+
+const sendData = async () => {
+  validate();
+
+  if (ifFormErrors.value) {
+    return;
+  }
+
+  let request: UpdateUserRequest = {
+    newAllergies: userAllergies.value,
+    newFirstName: userFirstName.value,
+    newLastName: userLastName.value,
+    newGender: userGender.value.code ?? undefined,
+    newDOB: userDOB.value?.toISOString().split('T')[0] ?? undefined
+  };
+  
+  loading.value = true;
+
+  await loginService.userUpdateData(
+    request, 
+    () => {
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Data updated successfully.', life: 5000 });
+      editDialogVisible.value = false;
+      loading.value = false;
+    }, 
+    (errorMsg: string) => {
+      toast.add({ severity: 'error', summary: 'Failure', detail: errorMsg, life: 5000 });
+      loading.value = false;
+    });
+}
+
 </script>

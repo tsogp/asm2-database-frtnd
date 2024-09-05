@@ -6,7 +6,6 @@ export interface VisibleAppointment {
   purpose: string,
   department_name: string,
   appointment_id: number,
-  treatments: Treatment[]
   date: Dayjs,
   slot_number: number,
   job_type: string,

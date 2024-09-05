@@ -1,6 +1,6 @@
 import requestService, { RequestServiceType } from "@/src/services/RequestService";
 import { AxiosError } from "axios";
-import { IUser, UserResponse } from "./interfaces";
+import { IUser, UpdateUserRequest, UserResponse } from "./interfaces";
 import dayjs, { Dayjs, isDayjs } from "dayjs";
 import router from "@/src/router";
 
@@ -31,21 +31,20 @@ class LoginService {
         ...response.data,
         role: 'patient',
       };
+
       localStorage.setItem('user', JSON.stringify(this.user));
 
       onSuccess();
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error);
+      throw error;
     }
   }
 
-  public async userUpdateData( onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
+  public async userUpdateData(request: UpdateUserRequest, onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
     try {
-      await this.requestService.postWithAuth<null>('/auth/patient/login', 
-        {
-          email,
-          password
-        },
+      await this.requestService.putWithAuth<null>('/patient', 
+        request
       );
 
       const response = await this.requestService.getWithAuth<UserResponse>('/patient/myInfo');
@@ -54,34 +53,38 @@ class LoginService {
         ...response.data,
         role: 'patient',
       };
+
       localStorage.setItem('user', JSON.stringify(this.user));
 
       onSuccess();
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error);
+      throw error;
     }
   } 
 
   public async staffLogin(email: string, password: string, onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
     try {
-      await this.requestService.postWithAuth<null>('/auth/staff/login', 
+      await this.requestService.postWithAuth<null>('/auth/login', 
         {
           email,
           password
         },
       );
       
-      const response = await this.requestService.getWithAuth<UserResponse>('/staff/myInfo');
+      const response = await this.requestService.getWithAuth<UserResponse>('/staff/my');
 
       this.user = {
         ...response.data,
         role: 'staff',
       };
+      
       localStorage.setItem('user', JSON.stringify(this.user));
 
       onSuccess();
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error);
+      throw error;
     }
   }
 
@@ -95,6 +98,7 @@ class LoginService {
       onSuccess();
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error);
+      throw error;
     }
   }
 

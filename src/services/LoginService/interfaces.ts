@@ -12,8 +12,9 @@ export interface UserResponse {
 export interface UpdateUserRequest {
   newFirstName?: string,
   newLastName?: string,
-  newDOB?: Date,
+  newDOB?: string,
   newGender?: string,
+  newAllergies?: string;
 }
 
 export interface IUser extends UserResponse {

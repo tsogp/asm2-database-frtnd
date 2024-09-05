@@ -209,11 +209,6 @@ const fetchAppointmentData = async () => {
       purpose: item.purpose,
       department_name: item.department_name,
       appointment_id: item.appointment_id,
-      treatments: JSON.parse(item.treatments).map((it: Treatment) => ({
-        ...it,
-        is_overdue: getStatus(it.date),
-        date: dayjs(it.date).utc().format('MMM D, YYYY'),
-      })) ?? [],
       date: dayjs(item.schedule_date).utc().hour(getTimeSlotHour(item.slot_number)),
       slot_number: item.slot_number,
       job_type: getOccupation(item.job_type),
