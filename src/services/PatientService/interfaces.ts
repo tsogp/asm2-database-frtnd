@@ -16,7 +16,7 @@ export interface Patient {
 
 export interface GetAllPatientReq extends DefaultPaginationRequest {}
 
-export interface GetALlPatientRes {
+export interface GetAllPatientRes {
   results: Patient[];
   pagination: DefaultPagination;
 }
