@@ -35,3 +35,16 @@ export interface GetPatientByNameReq {
 export interface GetPatientByNameRes {
   results: Patient[];
 }
+
+export interface UpdateMyInfoReq {
+  newFirstName: string;
+  newLastName: string;
+  newGender: string;
+  newDOB: string;
+}
+
+export interface UpdateMyInfoRes {
+  results: string;
+}
+
+
