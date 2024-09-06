@@ -22,7 +22,6 @@ class PatientService {
         { params }
       );
       
-      console.log(res?.data);
       return res?.data;
     } catch (err) {
       onFailure(((err as AxiosError).response?.data as any).error);
