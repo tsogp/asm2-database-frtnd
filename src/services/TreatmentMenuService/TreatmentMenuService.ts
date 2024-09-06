@@ -38,8 +38,8 @@ class TreatmentMenuService {
       const params = req;
       const res =
         await this.requestService.getWithAuth<GetTreatmentMenuByIdRes>(
-          `${this.prefix}/${params.id}`, 
-          {params}
+          `${this.prefix}/${params.id}`
+          // {params}
         );
 
       return res?.data;
