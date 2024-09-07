@@ -17,6 +17,7 @@ import treatmentRecordService from '@/src/services/TreatmentRecordService/Treatm
 import dayjs from 'dayjs';
 import scheduleService from '@/src/services/ScheduleService/ScheduleService';
 import appointmentService from '@/src/services/AppointmentService/AppointmentService';
+import reportService from '@/src/services/ReportService/ReportService';
 
 onMounted(async () => {
   let response;
@@ -55,6 +56,17 @@ onMounted(async () => {
   //   () => console.log('appointment finished!'), 
   //   (err) => console.log(err));
   
+  // response = await reportService.getPatientTreatmentRecordReport(
+  //   {start_date: '2024-01-01', end_date : '2024-12-12', email : 'jennifer@gmail.com'}, 
+  //   (err) => console.log(err));
+  // response = await reportService.getStaffHistory(
+  //   {start_date: '2024-01-01', end_date : '2024-12-12', email: 'alice.williams@hospital.management.com'}, 
+  //   (err) => console.log(err));
+  // response = await reportService.getStaffJobChange(
+  //   {start_date: '2024-01-01', end_date : '2024-12-12', email: 'alice.williams@hospital.management.com'},
+  //   (err) => console.log(err));
+  // response = await reportService.getBilling({appointment_id : 1}, (err) => console.log(err));
+  response = await 
   console.log(response);
 });
   
