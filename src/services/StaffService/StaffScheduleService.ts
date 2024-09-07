@@ -21,7 +21,7 @@ class StaffScheduleService {
 
       console.log(response);
 
-      return response?.data ?? [];
+      return response.data ?? [];
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error)
       throw(error);

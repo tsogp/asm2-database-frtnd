@@ -19,6 +19,10 @@ export interface File {
   metadata: FileMetadata,
 }
 
+export interface AvatarRequest {
+  mysql_id: number,
+}
+
 export interface AvatarResponse {
   filename: string,
   base64: string,
@@ -26,4 +30,11 @@ export interface AvatarResponse {
 
 export interface FileResponse {
   result: File[]
+}
+
+export interface UploadImageRequest {
+  file: File,
+  mysql_id: number,
+  dirTarget: string,
+  fileType: string,
 }

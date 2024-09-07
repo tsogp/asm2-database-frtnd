@@ -20,9 +20,9 @@
         <Column field="staff_name" header="Specialist Name">
           <template #body="{ data }">
             <div class="flex items-center gap-2">
-              <Avatar :image="`data:image/jpeg;base64,${staffAvatars.get(data.staff_id)?.base64 ?? ''}`"
+              <Avatar :image="`data:image/${staffAvatars.get(data.staff_id)?.filename.split('.')[1]};base64,${staffAvatars.get(data.staff_id)?.base64 ?? ''}`"
                 shape="circle" v-if="staffAvatars.get(data.staff_id)?.base64 !== undefined" />
-              <Avatar icon="pi pi-user" class="mr-2" size="xlarge" shape="circle" v-else />  
+              <Avatar icon="pi pi-user" class="mr-2" size="normal" shape="circle" v-else />  
               <span>{{ data.first_name }} {{ data.last_name }}</span>
             </div>
           </template>
@@ -85,7 +85,7 @@ const fetchStaffAvatars = async () => {
 
   const promises = Array.from(staffIds.values()).map(element =>
     fileService.getStaffAvatar(
-      { mysql_id: element, type: 'Avatar' },
+      { mysql_id: element },
       () => console.log(`failed fetching for ${element}`)
     ).then(result => [element, result])
   );

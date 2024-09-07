@@ -31,9 +31,11 @@ class DepartmentService {
     try {
       const response =  
         await this.requestService.getWithAuth<DoctorsByDepartmentResponse>(
-          '/department/doctor', { params }
+          `/department/doctor/${params.department_id}`,
         );
       
+        console.log(response);
+
       return response.data ?? [];
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error)
