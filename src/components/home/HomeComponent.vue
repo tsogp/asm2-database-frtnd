@@ -15,6 +15,7 @@ import { onMounted } from 'vue';
 import treatmentMenuService from '@/src/services/TreatmentMenuService/TreatmentMenuService';
 import treatmentRecordService from '@/src/services/TreatmentRecordService/TreatmentRecordService';
 import dayjs from 'dayjs';
+import scheduleService from '@/src/services/ScheduleService/ScheduleService';
 
 onMounted(async () => {
   let response;
@@ -34,7 +35,10 @@ onMounted(async () => {
   //   (err) => console.log(err));
   // response = await treatmentRecordService.markTreatmentRecordAsFinished({id : 3}, () => console.log('treatment record marked as finished!'), (err) => console.log(err));
   
+  // response = await scheduleService.getAllSchedule({page: 1, limit: 10}, (err) => console.log(err));
+  // response = await scheduleService.getScheduleByStaff({id: 2}, (err) => console.log(err));
+  // response = await scheduleService.getFreeSchedule({page: 1, limit: 10}, (err) => console.log(err));
   console.log(response);
-  });
+});
   
 </script>

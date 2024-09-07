@@ -3,7 +3,7 @@ import requestService, {
 } from "@/src/services/RequestService";
 import { AxiosError } from "axios";
 import { DefaultPaginationRequest } from "../DefaultInterfaces";
-import { GetAllPatientRes, GetAllPatientReq } from "./interfaces";
+import { GetAllPatientRes, GetAllPatientReq, GetScheduleRes, ScheduleByStaffIdReq, ScheduleByStaffIdRes } from "./interfaces";
 
 class PatientService {
   private requestService: RequestServiceType;
