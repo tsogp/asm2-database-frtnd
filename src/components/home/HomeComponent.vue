@@ -16,6 +16,7 @@ import treatmentMenuService from '@/src/services/TreatmentMenuService/TreatmentM
 import treatmentRecordService from '@/src/services/TreatmentRecordService/TreatmentRecordService';
 import dayjs from 'dayjs';
 import scheduleService from '@/src/services/ScheduleService/ScheduleService';
+import appointmentService from '@/src/services/AppointmentService/AppointmentService';
 
 onMounted(async () => {
   let response;
@@ -33,11 +34,27 @@ onMounted(async () => {
   // response = await treatmentRecordService.addTreatmentRecord({ treatment_id : 3, treatment_date : "2024-09-04xx", appointment_id : 3}, 
   //   () => console.log('treatment record added!'), 
   //   (err) => console.log(err));
-  // response = await treatmentRecordService.markTreatmentRecordAsFinished({id : 3}, () => console.log('treatment record marked as finished!'), (err) => console.log(err));
+  // response = await treatmentRecordService.markTreatmentRecordAsFinished({id : 3}, 
+  //   () => console.log('treatment record marked as finished!'), 
+  //   (err) => console.log(err));
   
   // response = await scheduleService.getAllSchedule({page: 1, limit: 10}, (err) => console.log(err));
   // response = await scheduleService.getScheduleByStaff({id: 2}, (err) => console.log(err));
   // response = await scheduleService.getFreeSchedule({page: 1, limit: 10}, (err) => console.log(err));
+  
+  // response = await appointmentService.getAllAppointments({page: 1, limit: 5}, (err) => console.log(err));
+  // response = await appointmentService.getAppointmentsByPatientId({id: 41}, {page: 1, limit: 5, status :'U'}, (err) => console.log(err));
+  // response = await appointmentService.bookAppointment(
+  //   { patientID: 41, doctorID: 4, date: '2024-09-13', slotNumber: 4, purpose: 'database consult'}, 
+  //   () => console.log('appointment booked!'), 
+  //   (err) => console.log(err));
+  // response = await appointmentService.updateAppointment({appointmentId: 21, date: '2024-09-13', timeSlot: 3}, 
+  //   () => console.log('appointment updated!'), 
+  //   (err) => console.log(err));
+  // response = await appointmentService.finishAppointment({appointment_id: 1}, 
+  //   () => console.log('appointment finished!'), 
+  //   (err) => console.log(err));
+  
   console.log(response);
 });
   
