@@ -1,6 +1,5 @@
 import requestService, { RequestServiceType } from "@/src/services/RequestService";
 import { AxiosError } from "axios";
-import { AppointmentRequest, AppointmentResponse, CancelAppointmentRequest } from "@/src/services/DepartmentService/interfaces";
 import { Department, DoctorsByDepartmentRequest, DoctorsByDepartmentResponse } from "./interfaces";
 import { DefaultPaginationRequest } from "../DefaultInterfaces";
 
@@ -11,14 +10,14 @@ class DepartmentService {
     this.requestService = requestService;
   }
 
-  public async getAllDepartments(onFailure: (errorMsg: string) => void): Promise<AppointmentResponse> {
+  public async getAllDepartments(onFailure: (errorMsg: string) => void): Promise<Department[]> {
     try {
       const response =  
         await this.requestService.getWithAuth<Department[]>(
           '/department/all', 
         );
 
-      return response?.data ?? [];
+      return response.data;
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error)
       throw(error);

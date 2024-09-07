@@ -48,7 +48,7 @@ class TreatmentMenuService {
       throw err;
     }
   }
-  
+
   public async addTreatmentMenu(
     req : AddTreatmentMenuReq,
     onSuccess: () => void,
@@ -67,35 +67,6 @@ class TreatmentMenuService {
       throw err;
     }
   }
-  // GET
-  // public async getAllDepartments(onFailure: (errorMsg: string) => void): Promise<AppointmentResponse> {
-  //   try {
-  //     const response =
-  //       await this.requestService.getWithAuth<Department[]>(
-  //         '/department/all',
-  //       );
-
-  //     return response?.data ?? [];
-  //   } catch (error) {
-  //     onFailure(((error as AxiosError).response?.data as any).error)
-  //     throw(error);
-  //   }
-  // }
-
-  // POST
-  // public async cancelAppointment(request: CancelAppointmentRequest, onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
-  //   try {
-  //     const response =
-  //       await this.requestService.putWithAuth<void>(
-  //         '/appointment/cancel', request
-  //       );
-
-  //     onSuccess();
-  //   } catch (error) {
-  //     onFailure(((error as AxiosError).response?.data as any).error)
-  //     throw(error);
-  //   }
-  // }
 }
 
 const treatmentMenuService = new TreatmentMenuService();

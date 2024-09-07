@@ -12,6 +12,7 @@ import {
   ScheduleByStaffIdReq,
   ScheduleByStaffIdRes,
 } from "../PatientService/interfaces";
+import { GetFreeSchedule } from "./interfaces";
 
 class ScheduleService {
   private requestService: RequestServiceType;
@@ -72,35 +73,22 @@ class ScheduleService {
       throw err;
     }
   }
-  // GET
-  // public async getAllDepartments(onFailure: (errorMsg: string) => void): Promise<AppointmentResponse> {
-  //   try {
-  //     const response =
-  //       await this.requestService.getWithAuth<Department[]>(
-  //         '/department/all',
-  //       );
 
-  //     return response?.data ?? [];
-  //   } catch (error) {
-  //     onFailure(((error as AxiosError).response?.data as any).error)
-  //     throw(error);
-  //   }
-  // }
+  public async getFreeScheduleById(
+    id: number,
+    onFailure: (errMsg: string) => void
+  ): Promise<GetFreeSchedule> {
+    try {
+      const res = await this.requestService.getWithAuth<GetFreeSchedule>(
+        `${this.prefix}/doctor/${id}`
+      );
 
-  // POST
-  // public async cancelAppointment(request: CancelAppointmentRequest, onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
-  //   try {
-  //     const response =
-  //       await this.requestService.putWithAuth<void>(
-  //         '/appointment/cancel', request
-  //       );
-
-  //     onSuccess();
-  //   } catch (error) {
-  //     onFailure(((error as AxiosError).response?.data as any).error)
-  //     throw(error);
-  //   }
-  // }
+      return res.data;
+    } catch (err) {
+      onFailure(((err as AxiosError).response?.data as any).error);
+      throw err;
+    }
+  }
 }
 
 const scheduleService = new ScheduleService();

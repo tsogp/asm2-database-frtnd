@@ -49,5 +49,4 @@ export interface FreeSchedule {
 
 export interface GetFreeSchedule {
   results: FreeSchedule[];
-  pagination: DefaultPagination;
 }

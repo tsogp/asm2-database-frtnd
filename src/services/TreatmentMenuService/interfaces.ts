@@ -1,3 +1,5 @@
+import { DefaultPagination } from "../DefaultInterfaces";
+
 export interface TreatmentMenu {
   treatment_id: number;
   treatment_name: string;

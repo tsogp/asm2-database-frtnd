@@ -53,9 +53,11 @@ class LoginService {
 
       const response = await this.requestService.getWithAuth<UserResponse>('/patient/myInfo');
       
+      const role = loginService.getUserRole();
+
       this.user = {
         ...response.data,
-        role: userData.data.role,
+        role: role ?? '',
       };
 
       localStorage.setItem('user', JSON.stringify(this.user));

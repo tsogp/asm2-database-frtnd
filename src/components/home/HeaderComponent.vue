@@ -24,7 +24,6 @@
     </template>
     <template #end>
       <div class="flex items-center gap-2">
-        <Button icon="pi pi-calendar-clock" outlined label="Book an appointment" />
         <SplitButton :model="profileItems" outlined severity="secondary" v-if="loginService.isAuthenticated()" @click="editDialogVisible = true">
           <span class="flex items-center font-bold">
             <div v-if="loginService.getUserRole() !== 'patient'" class="flex items-center">
@@ -187,12 +186,6 @@ const items = ref<MenuItem[]>([
     icon: 'pi pi-book',
     route: '/my-appointments',
     roles: ['patient', 'staff'],
-  },
-  {
-    label: 'My Treatments',
-    icon: 'pi pi-calendar',
-    route: '/my-treatments',
-    roles: ['patient', 'staff'],
   }
 ]);
 
@@ -233,6 +226,7 @@ const fetchDepartmentData = async () => {
 }
 
 watch(editDialogVisible, () => {
+  console.log(loginService.getUserRole())
   if (loginService.getUserRole() !== 'patient') {
     userDOB.value = loginService.getUserDOB();
     userFirstName.value = loginService.getUserFirstName() ?? '';
@@ -336,6 +330,7 @@ const loadImage = (event: Event) => {
 
 const uploadImage = async () => {
   await fileService.uploadFile(
+    // @ts-ignore
     { mysql_id: loginService.getUserID(), file: image.value, dirTarget: 'staff', fileType: 'Avatar' },
     async () => {
       await loginService.getStaffInfo(); 
