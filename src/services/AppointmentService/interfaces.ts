@@ -29,6 +29,26 @@ export interface AppointmentRequest {
   limit: number;
 }
 
+export interface StaffAppointmentRequest extends DefaultPaginationRequest {
+  role: string;
+  id: number;
+}
+
+export interface StaffAppointment {
+  appointment_id: number; 
+  patient_first_name: string; 
+  patient_last_name: string;
+  purpose: string;
+  schedule_date: Dayjs;
+  slot_number: number;
+  status: string;
+};
+
+export interface StaffAppointmentResponse {
+  results: StaffAppointment[];
+  pagination: DefaultPagination;
+}
+
 export interface CancelAppointmentRequest {
   patient_id: number;
   appointment_id: number;

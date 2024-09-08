@@ -1,6 +1,6 @@
 import requestService, { RequestServiceType } from "@/src/services/RequestService";
 import { AxiosError } from "axios";
-import { AllAppointmentsRes, AppointmentByPatientIdParams, AppointmentByPatientIdQueries, AppointmentByPatientIdRes, AppointmentRequest, AppointmentResponse, BookAppointmentReq, BookAppointmentRes, CancelAppointmentRequest, FinishAppointmentBody, FinishAppointmentRes, UpdateAppointmentReq, UpdateAppointmentRes } from "@/src/services/AppointmentService/interfaces";
+import { AllAppointmentsRes, AppointmentByPatientIdParams, AppointmentByPatientIdQueries, AppointmentByPatientIdRes, AppointmentRequest, AppointmentResponse, BookAppointmentReq, BookAppointmentRes, CancelAppointmentRequest, FinishAppointmentBody, FinishAppointmentRes, StaffAppointmentRequest, StaffAppointmentResponse, UpdateAppointmentReq, UpdateAppointmentRes } from "@/src/services/AppointmentService/interfaces";
 import { DefaultPagination, DefaultPaginationRequest } from "../DefaultInterfaces";
 import dayjs from "dayjs";
 
@@ -19,7 +19,7 @@ class AppointmentService {
 
       const response =  
         await this.requestService.getWithAuth<AppointmentResponse>(
-          '/appointment/my', 
+          '/appointment/patient/my', 
           { params }
         );
 
@@ -126,6 +126,23 @@ class AppointmentService {
       
       onSuccess();
       return response?.data;
+    } catch (error) {
+      onFailure(((error as AxiosError).response?.data as any).error)
+      throw(error);
+    }
+  }
+
+  public async getStaffAppointments(request: StaffAppointmentRequest, onFailure: (errorMsg: string) => void): Promise<StaffAppointmentResponse> {
+    try {
+      const params = request;
+
+      const response =  
+        await this.requestService.getWithAuth<StaffAppointmentResponse>(
+          '/appointment/doctor/my', 
+          { params }
+        );
+
+      return response.data;
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error)
       throw(error);

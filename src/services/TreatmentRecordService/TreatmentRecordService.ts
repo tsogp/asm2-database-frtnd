@@ -133,6 +133,25 @@ class TreatRecordService {
       throw err;
     }
   }
+
+  public async markTreatmentRecordAsMissing(
+    params : TreatmentRecordFinishReq,
+    onSuccess: () => void,
+    onFailure: (errMsg: string) => void
+  ): Promise<TreatmentRecordFinishRes> {
+    try {
+      const res =
+        await this.requestService.putWithAuth<TreatmentRecordFinishRes>(
+          `${this.prefix}/finish/${params.id}`
+        );
+
+      onSuccess();
+      return res.data;
+    } catch (err) {
+      onFailure(((err as AxiosError).response?.data as any).error);
+      throw err;
+    }
+  }
 }
 
 const treatmentRecordService = new TreatRecordService();

@@ -2,7 +2,7 @@
   <Toast />
   <Menubar :model="items" style="border-radius: 0%;">
     <template #start>
-      <Image src="/hospital_icon.svg" width="25" />
+      <Image src="/hospital_icon.svg" width="25" class="cursor-pointer" @click="router.push('/about-us')" />
     </template>
     <template #item="{ item, props, hasSubmenu, root }">
       <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
@@ -167,7 +167,7 @@ import { Department } from "@/src/services/DepatmentsService/interfaces";
 import departmentService from "@/src/services/DepatmentsService/DepartmentsService";
 import InputNumber from "primevue/inputnumber";
 import ticketService from "@/src/services/TicketService/TicketService";
-import { CreateTicketRequest } from "@/src/services/TicketService/interfaces";
+import { NewTicketBody } from "@/src/services/TicketService/interfaces";
 import fileService from "@/src/services/FileService/FileService";
 
 const items = ref<MenuItem[]>([
@@ -390,16 +390,16 @@ const sendData = async () => {
         loading.value = false;
       });
   } else {
-    let request: CreateTicketRequest = {
+    let request: NewTicketBody = {
       newFirstName: userFirstName.value,
       newLastName: userLastName.value,
       newGender: userGender.value.code ?? 'M',
-      newSalary: userSalary.value ?? undefined,
-      newDepartmentID: userDepartment.value?.department_id,
-      newJobType: userJobType.value?.code,
+      newSalary: userSalary.value ?? 0,
+      newDepartmentID: userDepartment.value?.department_id ?? 0,
+      newJobType: userJobType.value?.code ?? '',
     };
 
-    await ticketService.createTicket(
+    await ticketService.createNewTicket(
       request,
       () => {
         toast.add({ severity: 'success', summary: 'Success', detail: 'Changes ticket was submitted.', life: 5000 });

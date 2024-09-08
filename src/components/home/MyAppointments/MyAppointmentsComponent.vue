@@ -29,9 +29,9 @@
         </Column>
         <Column field="is_overdue" header="Status">
           <template #body="{ data }">
-            <Tag
-              :severity="data.is_overdue === 'Cancelled' ? 'danger' : data.is_overdue === 'Past' ? 'info' : 'success'"
-              :value="data.is_overdue" />
+            <Tag 
+              :severity="getTicketSeverity(data.is_overdue)" 
+              :value="getTicketStatusName(data.is_overdue)" />
           </template>
         </Column>
         <Column field="purpose" header="Purpose"></Column>
@@ -83,9 +83,9 @@
         </Column>
         <Column header="Status">
           <template #body="{ data }">
-              <Tag
-                :severity="getTreatmentStatus(data.treatment_status) === 'Cancelled' ? 'danger' : 'success'"
-                :value="getTreatmentStatus(data.treatment_status)" />
+            <Tag 
+              :severity="getTicketSeverity(data.is_overdue)" 
+              :value="getTicketStatusName(data.is_overdue)" />
           </template>
         </Column>
       </DataTable>
@@ -217,12 +217,34 @@ const getOccupation = (occupation: string) => {
   return (occupation == 'D') ? 'Doctor' : 'Nurse';
 }
 
-const getStatus = (date: Dayjs, status?: string) => {
-  return status !== 'C'
-    ? dayjs(date).isBefore(dayjs())
-      ? 'Past'
-      : 'Upcoming'
-    : 'Cancelled';
+const getTicketSeverity = (status: string) => {
+  switch (status) {
+    case 'U':
+      return 'info';
+    case 'F':
+      return 'success';
+    case 'C':
+      return 'danger';
+		case 'M':
+      return 'danger';
+    default:
+      return 'info';
+  }
+}
+
+const getTicketStatusName = (status: string) => {
+  switch (status) {
+    case 'U':
+      return 'Upcoming';
+    case 'F':
+      return 'Finished';
+    case 'C':
+      return 'Cancelled';
+		case 'M':
+      return 'Missing';
+    default:
+      return 'Upcoming';
+  }
 }
 
 const getTimeSlotHour = (slot: number) => {
@@ -439,7 +461,7 @@ const fetchAppointmentData = async () => {
       date: dayjs(item.schedule_date).hour(getTimeSlotHour(item.slot_number)),
       slot_number: item.slot_number,
       job_type: getOccupation(item.job_type),
-      is_overdue: getStatus(item.schedule_date, item.status),
+      is_overdue: item.status,
       staff_name: item.staff_first_name + ' ' + item.staff_last_name,
     }));
 

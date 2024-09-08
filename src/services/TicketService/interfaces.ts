@@ -18,6 +18,7 @@ export interface TicketReport {
   ticket_note: string;
   ticket_status: string;
   ticket_first_name: string;
+  ticket_salary: number;
   ticket_last_name: string;
   ticket_gender: string;
   ticket_job_type: string;
@@ -36,11 +37,11 @@ export interface Ticket {
   newFirstName: string;
   newLastName: string;
   newGender: string;
-  newManagerId: number;
+  newManagerId?: number;
   newSalary: number;
   newJobType: string;
   newDepartmentID: number;
-  notes: string;
+  notes?: string;
 }
 
 export interface NewTicketBody extends Ticket {}

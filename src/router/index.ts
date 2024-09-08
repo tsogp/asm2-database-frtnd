@@ -4,8 +4,8 @@ import HomeComponent from '@/src/components/home/HomeComponent.vue'
 import AboutUsComponent from '@/src/components/home/AboutUsComponent.vue'
 import DoctorsComponent from '@/src/components/home/DoctorsComponent.vue'
 import MyAppointmentsComponent from '@/src/components/home/MyAppointments/MyAppointmentsComponent.vue'
-import StaffAppointment from '@/src/components/home/StaffAppointments.vue'
-import StaffTickets from '@/src/components/home/StaffTickets.vue'
+import StaffAppointment from '@/src/components/home/StaffAppointments/StaffAppointments.vue'
+import StaffTickets from '@/src/components/home/StaffTickets/StaffTickets.vue'
 import loginService from '../services/LoginService/LoginService'
 
 const routes = [
@@ -37,7 +37,7 @@ const routes = [
       },
       {
         path: 'staff-appointments',
-        name: 'My Appointments',
+        name: 'Staff Appointments',
         component: StaffAppointment,
         meta: { requiresAuth: true }
       },
