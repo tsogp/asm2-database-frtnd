@@ -181,14 +181,34 @@ const items = ref<MenuItem[]>([
     icon: 'pi pi-search',
     route: '/doctors',
   },
-  {
-    label: 'My Appointments',
-    icon: 'pi pi-book',
-    route: '/my-appointments',
-    roles: ['patient', 'staff'],
-  }
 ]);
 
+const fillUpItems = () => {
+  if (loginService.getUserRole() === 'patient') {
+    items.value.push(
+      {
+        label: 'My Appointments',
+        icon: 'pi pi-book',
+        route: '/my-appointments',
+      },
+    )
+  }
+
+  if (loginService.getUserRole() === 'staff') {
+    items.value.push(
+      {
+        label: 'My Appointments',
+        icon: 'pi pi-book',
+        route: '/staff-appointments',
+      },
+      {
+        label: 'My Tickets',
+        icon: 'pi pi-book',
+        route: '/staff-tickets',
+      },
+    )
+  }
+}
 
 
 const toast = useToast();
@@ -396,6 +416,7 @@ const sendData = async () => {
 
 onMounted(async () => {
   await fetchDepartmentData();
+  fillUpItems();
 })
 
 </script>
