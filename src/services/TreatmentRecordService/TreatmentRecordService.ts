@@ -142,7 +142,7 @@ class TreatRecordService {
     try {
       const res =
         await this.requestService.putWithAuth<TreatmentRecordFinishRes>(
-          `${this.prefix}/finish/${params.id}`
+          `${this.prefix}/missing/${params.id}`
         );
 
       onSuccess();

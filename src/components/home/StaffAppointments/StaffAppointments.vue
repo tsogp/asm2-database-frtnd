@@ -2,6 +2,11 @@
 	<div class="flex-1 overflow-y-auto">
     <div class="card">
       <DataTable :value="appointmentsData" :loading="loading">
+				<template #empty>
+					<div class="p-4 text-center">
+						<span class="text-lg">No appointments yet.</span>
+					</div>
+				</template>
 				<Column field="schedule_date" header="Appointment Date">
 					<template #body="slotProps">
 						{{ generateDate(slotProps.data.schedule_date, slotProps.data.slot_number) }}
@@ -10,8 +15,8 @@
 				<Column header="Status">
 					<template #body="slotProps">
             <Tag 
-              :severity="getTicketSeverity(slotProps.data.ticket_status)" 
-              :value="getTicketStatusName(slotProps.data.ticket_status)" />
+              :severity="getTicketSeverity(slotProps.data.status)" 
+              :value="getTicketStatusName(slotProps.data.status)" />
           </template></Column>
 				<Column field="patient_first_name" header="Patient First Name"></Column>
 				<Column field="patient_last_name" header="Patient Last Name"></Column>
@@ -33,12 +38,12 @@
 								@click="() => {
 									currentAppointmentId = slotProps.data.appointment_id;
 									finishAppointmentDialogVisible = true;
-								}" class="mr-2" />
+								}" class="mr-2" :disabled="slotProps.data.status === 'F'" />
 							<Button icon="pi pi-check" outlined severity="success" aria-label="Finish"
 								@click="() => {
 									currentAppointmentId = slotProps.data.appointment_id;
 									finishAppointmentDialogVisible = true;
-								}" />
+								}" :disabled="slotProps.data.status === 'F'" />
 						</div>
 					</template>
 				</Column>
@@ -47,37 +52,53 @@
   </div>
   <Paginator v-model:rows="paginatorRows" :totalRecords="totalRecords" :rowsPerPageOptions="[5, 10, 20, 50]"
     @page="(data) => page = data.page + 1"></Paginator>
-	<Dialog v-model:visible="treatmentDialogVisible" header="Related Treatments" modal
-    :contentStyle="{ height: '300px' }">
+	<Dialog v-model:visible="treatmentDialogVisible" header="Related Treatments" modal :contentStyle="{ height: '500px' }">
     <div class="flex flex-col gap-y-2 h-full">
-      <DataTable :value="treatmentData" :loading="treatmentLoading" scrollable scrollHeight="flex"
-        tableStyle="min-width: 50rem" class="flex-1">
-        <Column field="treatment_name" header="Name"></Column>
-        <Column field="treatment_date" header="Date">
-          <template #body="{ data }">
-            {{ dayjs(data.treatment_date).format('MMM D, YYYY') }}
-          </template>
-        </Column>
-        <Column header="Status">
-          <template #body="{ data }">
-            <Tag 
-              :severity="getTicketSeverity(data.is_overdue)" 
-              :value="getTicketStatusName(data.is_overdue)" />
-          </template>
-        </Column>
-				<Column header="Actions">
-					<template #body="{ data }">
-						<div class="flex">
-							<Button icon="pi pi-file-edit" outlined severity="info" aria-label="Edit"
-								@click="() => {}" class="mr-2" />
-							<Button icon="pi pi-check" outlined severity="success" aria-label="Finish"
-								@click="() => handleFinishTreatment(data.treatment_id)" class="mr-2" />
-							<Button icon="pi pi-times" outlined severity="danger" aria-label="Cance;]l"
-								@click="() => handleMarkTreatmentMissing(data.treatment_id)" />
+			<div class="flex-1 overflow-y-auto">
+				<DataTable :value="treatmentData" :loading="treatmentLoading" scrollable scrollHeight="flex"
+					tableStyle="min-width: 50rem" class="flex-1">
+					<template #empty>
+						<div class="p-4 text-center">
+							<span class="text-lg">No tickets yet.</span>
 						</div>
 					</template>
-				</Column>
-      </DataTable>
+					<template #header>
+						<div class="flex flex-wrap items-center justify-between gap-2">
+							<span class="text-xl font-bold">My Appointments</span>
+							<div class="flex flex-row gap-x-2">
+								<Button icon="pi pi-plus" rounded raised @click="() => {
+									fetchAllTreatmentData();
+									createAppointmentDialogVisible = true;
+								}" />
+							</div>
+						</div>
+					</template>
+					<Column field="treatment_name" header="Name"></Column>
+					<Column field="treatment_date" header="Date">
+						<template #body="{ data }">
+							{{ dayjs(data.treatment_date).format('MMM D, YYYY') }}
+						</template>
+					</Column>
+					<Column field="treatment_cost" header="Cost"></Column>
+					<Column header="Status">
+						<template #body="{ data }">
+							<Tag 
+								:severity="getTicketSeverity(data.treatment_status)" 
+								:value="getTicketStatusName(data.treatment_status)" />
+						</template>
+					</Column>
+					<Column header="Actions">
+						<template #body="{ data }">
+							<div class="flex">
+								<Button icon="pi pi-check" outlined severity="success" aria-label="Finish"
+									@click="() => handleFinishTreatment(data.record_id)" class="mr-2" :disabled="data.treatment_status !== 'U'" />
+								<Button icon="pi pi-times" outlined severity="danger" aria-label="Cance;]l"
+									@click="() => handleMarkTreatmentMissing(data.record_id)" :disabled="data.treatment_status !== 'U'" />
+							</div>
+						</template>
+					</Column>
+				</DataTable>
+			</div>
       <Paginator v-model:rows="treatmentPaginatorRows" :totalRecords="treatmentTotalRecords" :rowsPerPageOptions="[5, 10, 20, 50]"
           @page="(data) => page = data.page + 1"></Paginator>
     </div>
@@ -96,10 +117,50 @@
 	</Dialog>
 	<Dialog v-model="editAppointmentDialogVisible" header="Edit Appointment" :visible="editAppointmentDialogVisible" modal>
 		<p>Are you sure you want to edit this appointment?</p>
-		<div class="flex justify-end">
+		<template #footer>
 			<Button label="No" class="mr-2" @click="editAppointmentDialogVisible = false" />
 			<Button label="Yes" class="mr-2" @click="editAppointmentDialogVisible = false" />
+		</template>
+	</Dialog>
+	<Dialog header="Add treatment" :visible="createAppointmentDialogVisible" modal :style="{ width: '34rem' }">
+		<div class="flex flex-col gap-y-1">
+			<div class="flex flex-row items-center gap-x-1">
+				<i class="pi pi-star-fill" style="color: red; font-size: 0.5rem" />
+				<label for="dept" class="font-semibold">Treatment Type</label>
+			</div>
+			<Select 
+				v-model="chosenTreatmentMenu" 
+				:options="allTreatmentData" 
+				optionLabel="treatment_name" 
+				placeholder="Select a Treatment" 
+				class="w-full"
+				:loading="allTreatmentLoading"
+			/>
+
+			<div class="flex flex-row items-center gap-x-1">
+				<i class="pi pi-star-fill" style="color: red; font-size: 0.5rem" />
+				<label for="dept" class="font-semibold">Treatment Date</label>
+			</div>
+
+			<Select 
+				v-model="chosenTreatmentDate" 
+				:options="doctorSchedules" 
+				placeholder="Select a date" 
+				class="w-full"
+				:loading="allTreatmentLoading"
+				:disabled="!chosenTreatmentMenu"
+			>
+				<template #option="{ option }">
+					{{ option.format('MMM D, YYYY') }}
+				</template>
+			</Select>
 		</div>
+		<template #footer>
+			<Button label="Cancel" icon="pi pi-times" class="mr-2" outlined severity="danger" @click="createAppointmentDialogVisible = false" />
+			<Button label="Add treatment" icon="pi pi-check" class="mr-2" outlined severity="success" @click="() => {
+				handleCreateNewTreatment();
+			}" />
+		</template>
 	</Dialog>
 </template>
 
@@ -118,6 +179,12 @@ import utc from 'dayjs/plugin/utc'
 import Tag from 'primevue/tag';
 import { useToast } from 'primevue/usetoast';
 import treatmentRecordService from '@/src/services/TreatmentRecordService/TreatmentRecordService';
+import treatmentMenuService from '@/src/services/TreatmentMenuService/TreatmentMenuService';
+import { TreatmentMenu } from '@/src/services/TreatmentMenuService/interfaces';
+import Select from 'primevue/select';
+import scheduleService from '@/src/services/ScheduleService/ScheduleService';
+import { FreeSchedule } from '@/src/services/ScheduleService/interfaces';
+import FreeScheduleComponent from '../FreeScheduleComponent.vue';
 
 dayjs.extend(utc);
 
@@ -241,7 +308,7 @@ const handleFinishAppointment = async () => {
 	await appointmentService.finishAppointment(
 		{appointment_id: currentAppointmentId.value},
 		async () => {
-			toast.add({severity: 'success', summary: 'Success', detail: 'Appointment finished successfully.'});
+			toast.add({severity: 'success', summary: 'Success', detail: 'Appointment finished successfully.', life: 5000});
 			finishAppointmentDialogVisible.value = false;
 			await fetchAppointmentData();
 		},
@@ -256,9 +323,9 @@ const handleFinishTreatment = async (id: number) => {
 	await treatmentRecordService.markTreatmentRecordAsFinished(
 		{ id },
 		async () => {
-			toast.add({severity: 'success', summary: 'Success', detail: 'Treatment finished successfully.'});
+			toast.add({severity: 'success', summary: 'Success', detail: 'Treatment finished successfully.', life: 5000});
 			finishAppointmentDialogVisible.value = false;
-			await fetchAppointmentData();
+			await fetchTreatmentDataById(currentAppointmentId.value);
 		},
 		(errorMessage) => {
 			toast.add({severity: 'error', summary: 'Error', detail: errorMessage});
@@ -271,15 +338,76 @@ const handleMarkTreatmentMissing = async (id: number) => {
 	await treatmentRecordService.markTreatmentRecordAsMissing(
 		{ id },
 		async () => {
-			toast.add({severity: 'success', summary: 'Success', detail: 'Treatment marked as missing successfully.'});
+			toast.add({severity: 'success', summary: 'Success', detail: 'Treatment marked as missing successfully.', life: 5000});
 			finishAppointmentDialogVisible.value = false;
-			await fetchAppointmentData();
+			await fetchTreatmentDataById(currentAppointmentId.value);
 		},
 		(errorMessage) => {
 			toast.add({severity: 'error', summary: 'Error', detail: errorMessage});
 			finishAppointmentDialogVisible.value = false;
 		},
 	);
+}
+
+const createAppointmentDialogVisible = ref(false);
+const allTreatmentLoading = ref(false);
+const allTreatmentData = ref<TreatmentMenu[]>([]);
+const chosenTreatmentMenu = ref<TreatmentMenu | null>(null);
+
+const fetchAllTreatmentData = async () => {
+	allTreatmentLoading.value = true;
+
+	const response = await treatmentMenuService.getAllTreatmentMenus(
+		(errorMessage) => console.log(errorMessage)
+	)
+
+	allTreatmentData.value = response.results;
+	console.log(allTreatmentData.value);
+	allTreatmentLoading.value = false;
+}
+
+const doctorSchedules = ref<Dayjs[]>([]);
+const chosenTreatmentDate = ref<Dayjs | null>(null);
+
+watch(chosenTreatmentMenu, () => {
+  if (chosenTreatmentMenu.value) {
+    fetchChosenDoctorSchedule();
+  }
+})
+
+const fetchChosenDoctorSchedule = async () => {
+  const response = await scheduleService.getFreeScheduleById(
+    loginService.getUserID() ?? 0,
+    (errorId) => {}
+  )
+
+  doctorSchedules.value = response.results.map(item => dayjs(item.schedule_date).add(7, 'hour'));
+
+	console.log(doctorSchedules.value);
+}
+
+const handleCreateNewTreatment = async () => {
+	if (!chosenTreatmentMenu.value || !chosenTreatmentDate.value) {
+		toast.add({severity: 'error', summary: 'Error', detail: 'Please select a treatment and a time slot.'});
+		return;
+	}
+
+	await treatmentRecordService.addTreatmentRecord(
+		{
+			appointment_id: currentAppointmentId.value,
+			treatment_id: chosenTreatmentMenu.value.treatment_id,
+			treatment_date: chosenTreatmentDate.value.toISOString().split('T')[0],
+		},
+		async () => {
+			toast.add({severity: 'success', summary: 'Success', detail: 'Treatment added successfully.', life: 5000});
+			createAppointmentDialogVisible.value = false;
+			await fetchTreatmentDataById(currentAppointmentId.value);
+		},
+		(errorMessage) => {
+			toast.add({severity: 'error', summary: 'Error', detail: errorMessage, life: 5000});
+			createAppointmentDialogVisible.value = false;
+		},
+	)
 }
 
 onMounted(async () => {

@@ -1,16 +1,16 @@
 <template>
 	<FullHeightComponent>
-    <Toast />
 		<div class="flex items-center justify-center h-full">
 			<Card style="width: 25rem; overflow: hidden">
 				<template #header>
 					<div class="flex flex-row justify-between mx-5 mt-5">
-						<SelectButton v-model="signUpType" :options="signUpTypes" />
+						<SelectButton v-model="signUpType" :options="signUpTypes" :allowEmpty="false" />
 						<SelectButton 
 							v-model="signUpRole" 
 							:options="signUpRoles" 
 							:disabled="signUpType === SignUpTypes.REGISTER" 
 							:optionDisabled="SignUpRoles.PATIENT"
+							:allowEmpty="false"
 						/>
 					</div>
 				</template>
@@ -167,7 +167,15 @@ const validate = () => {
 };
 
 const onLoginSuccess = () => {
-  router.push("/");
+	toast.add({ severity: 'success', summary: 'Login successful.', detail: 'Redirecting...', life: 1000 });
+
+	if (loginService.getUserRole() === 'patient') {
+  	router.push("/about-us");
+	} else if (loginService.getUserRole() === 'staff') {
+		router.push("/staff-appointments");
+	} else {
+		router.push("/admin-users");
+	}
 } 
 
 const onLoginFailure = (errorMsg: string) => {

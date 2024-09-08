@@ -2,6 +2,11 @@
 	<div class="flex-1 overflow-y-auto">
     <div class="card">
       <DataTable :value="ticketsWithChangesData" :loading="loading">
+        <template #empty>
+          <div class="p-4 text-center">
+            <span class="text-lg">No tickets yet.</span>
+          </div>
+        </template>
         <Column field="created_date" header="Created Date">
           <template #body="slotProps">
             {{ slotProps.data.created_date.format('MMM D, YYYY') }}

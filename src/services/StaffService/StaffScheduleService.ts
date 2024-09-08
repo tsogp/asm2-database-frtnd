@@ -1,6 +1,7 @@
 import requestService, { RequestServiceType } from "@/src/services/RequestService";
 import { AxiosError } from "axios";
 import { StaffScheduleRequest } from "./interfaces";
+import { DefaultPaginationRequest } from "../DefaultInterfaces";
 
 class StaffScheduleService {
   private requestService: RequestServiceType;
@@ -9,13 +10,31 @@ class StaffScheduleService {
     this.requestService = requestService;
   }
 
-  public async getStaffSchedule(request: StaffScheduleRequest, onFailure: (errorMsg: string) => void) {
+  // public async getStaffSchedule(request: StaffScheduleRequest, onFailure: (errorMsg: string) => void) {
+  //   try {
+  //     const params = request;
+
+  //     const response =  
+  //       await this.requestService.getWithAuth<void>(
+  //         '/schedule/staff', 
+  //         { params }
+  //       );
+
+  //     console.log(response);
+
+  //     return response.data ?? [];
+  //   } catch (error) {
+  //     onFailure(((error as AxiosError).response?.data as any).error)
+  //     throw(error);
+  //   }
+  // }
+  public async getAllStaffs(request: DefaultPaginationRequest, onFailure: (errorMsg: string) => void) {
     try {
       const params = request;
 
       const response =  
         await this.requestService.getWithAuth<void>(
-          '/schedule/staff', 
+          '/staff/all', 
           { params }
         );
 

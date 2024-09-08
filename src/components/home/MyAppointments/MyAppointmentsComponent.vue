@@ -2,6 +2,11 @@
   <div class="flex-1 overflow-y-auto">
     <div class="card">
       <DataTable :value="appointmentData" tableStyle="min-width: 50rem" :loading="loading">
+        <template #empty>
+          <div class="p-4 text-center">
+            <span class="text-lg">No appointments yet.</span>
+          </div>
+        </template>
         <template #header>
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span class="text-xl font-bold">My Appointments</span>
@@ -71,16 +76,22 @@
   <Paginator v-model:rows="paginatorRows" :totalRecords="totalRecords" :rowsPerPageOptions="[5, 10, 20, 50]"
     @page="(data) => page = data.page + 1"></Paginator>
   <Dialog v-model:visible="treatmentDialogVisible" header="Related Treatments" modal
-    :contentStyle="{ height: '300px' }">
+    :contentStyle="{ height: '500px' }">
     <div class="flex flex-col gap-y-2 h-full">
       <DataTable :value="treatmentData" :loading="treatmentLoading" scrollable scrollHeight="flex"
         tableStyle="min-width: 50rem" class="flex-1">
+        <template #empty>
+          <div class="p-4 text-center">
+            <span class="text-lg">No treatments yet.</span>
+          </div>
+        </template>
         <Column field="treatment_name" header="Name"></Column>
         <Column field="treatment_date" header="Date">
           <template #body="{ data }">
             {{ dayjs(data.treatment_date).format('MMM D, YYYY') }}
           </template>
         </Column>
+        <Column field="treatment_cost" header="Cost"></Column>
         <Column header="Status">
           <template #body="{ data }">
             <Tag 
@@ -471,10 +482,6 @@ const fetchAppointmentData = async () => {
   totalPages.value = response?.pagination.totalPages ?? 0;
   loading.value = false;
   console.log(response)
-}
-
-const fetchScheduleData = async (staff_id: number) => {
-  await staffScheduleService.getStaffSchedule({staff_id}, (errorMsg) => console.log('failed to fetch the doctor schedule'));
 }
 
 const handleCancelAppointment = async (appointment_id: number, patient_id: number) => {

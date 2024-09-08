@@ -16,6 +16,7 @@ export interface Treatment {
   job_type: string;
   department_name: string;
   treatment_id: number;
+  record_id: number;
   treatment_name: string;
   treatment_date: Dayjs;
   treatment_cost: number;

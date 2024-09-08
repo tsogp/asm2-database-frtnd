@@ -192,9 +192,7 @@ const fillUpItems = () => {
         route: '/my-appointments',
       },
     )
-  }
-
-  if (loginService.getUserRole() === 'staff') {
+  } else if (loginService.getUserRole() === 'staff') {
     items.value.push(
       {
         label: 'My Appointments',
@@ -207,6 +205,44 @@ const fillUpItems = () => {
         route: '/staff-tickets',
       },
     )
+  } else if (loginService.getUserRole() === 'admin') {
+    items.value = [
+      {
+        label: 'Users',
+        icon: 'pi pi-address-book',
+        route: '/admin-users',
+      },
+      {
+        label: 'Appointments',
+        icon: 'pi pi-book',
+        route: '/admin-appointments',
+      },
+      {
+        label: 'Tickets',
+        icon: 'pi pi-id-card',
+        route: '/admin-tickets',
+      },
+      {
+        label: 'Departments',
+        icon: 'pi pi-building',
+        route: '/admin-departments',
+      },
+      {
+        label: 'Schedules',
+        icon: 'pi pi-calendar',
+        route: '/admin-schedule',
+      },
+      {
+        label: 'Reports',
+        icon: 'pi pi-list',
+        route: '/admin-reports',
+      },
+      {
+        label: 'Treatments',
+        icon: 'pi pi-hammer',
+        route: '/admin-treatments',
+      }
+    ];
   }
 }
 
@@ -246,7 +282,7 @@ const fetchDepartmentData = async () => {
 }
 
 watch(editDialogVisible, () => {
-  console.log(loginService.getUserRole())
+
   if (loginService.getUserRole() !== 'patient') {
     userDOB.value = loginService.getUserDOB();
     userFirstName.value = loginService.getUserFirstName() ?? '';

@@ -7,6 +7,13 @@ import MyAppointmentsComponent from '@/src/components/home/MyAppointments/MyAppo
 import StaffAppointment from '@/src/components/home/StaffAppointments/StaffAppointments.vue'
 import StaffTickets from '@/src/components/home/StaffTickets/StaffTickets.vue'
 import loginService from '../services/LoginService/LoginService'
+import AdminUserControlComponent from '../components/home/AdminUserControlComponent/AdminUserControlComponent.vue'
+import AdminTreatmentControlComponent from '../components/home/AdminTreatmentControlComponent/AdminTreatmentControlComponent.vue'
+import AdminTicketControlComponent from '../components/home/AdminTicketControlComponent/AdminTicketControlComponent.vue'
+import AdminScheduleControlComponent from '../components/home/AdminScheduleControlComponent/AdminScheduleControlComponent.vue'
+import AdminDepartmentControlComponent from '../components/home/AdminDepartmentControlComponent/AdminDepartmentControlComponent.vue'
+import AdminAppointmentControlComponent from '../components/home/AdminAppointmentControlComponent/AdminAppointmentControlComponent.vue'
+import AdminReportControlComponent from '../components/home/AdminReportControlComponent.vue/AdminReportControlComponent.vue'
 
 const routes = [
   {
@@ -47,6 +54,48 @@ const routes = [
         component: StaffTickets,
         meta: { requiresAuth: true }
       },
+      {
+        path: 'admin-users',
+        name: 'User Control',
+        component: AdminUserControlComponent,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'admin-treatments',
+        name: 'Treatment Control',
+        component: AdminTreatmentControlComponent,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'admin-tickets',
+        name: 'Ticket Control',
+        component: AdminTicketControlComponent,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'admin-schedule',
+        name: 'Schedule Control',
+        component: AdminScheduleControlComponent,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'admin-departments',
+        name: 'Department Control',
+        component: AdminDepartmentControlComponent,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'admin-appointments',
+        name: 'Appointment Control',
+        component: AdminAppointmentControlComponent,
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'admin-reports',
+        name: 'Report Control',
+        component: AdminReportControlComponent,
+        meta: { requiresAuth: true }
+      }
     ]
 	},
 ]

@@ -83,8 +83,6 @@ class LoginService {
         const imgSrc = await fileService.getStaffAvatar(
           { mysql_id: response.data.staff_id },
           () => console.log(`failed fetching for ${response.data.staff_id}`));
-        
-        console.log(imgSrc)
 
         this.user = {
           ...response.data,

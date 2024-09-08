@@ -20,8 +20,8 @@ export interface Staff {
 }
 
 export interface GetAllStaffReq extends DefaultPaginationRequest {
-  job_type: string;
-  department: number;
+  job_type?: string;
+  department?: number;
 }
 
 export interface GetAllStaffRes {
