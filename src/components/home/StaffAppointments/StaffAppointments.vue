@@ -34,11 +34,11 @@
 				<Column header="Actions">
 					<template #body="slotProps">
 						<div class="flex">
-							<Button icon="pi pi-file-edit" outlined severity="info" aria-label="Edit"
+							<!-- <Button icon="pi pi-file-edit" outlined severity="info" aria-label="Edit"
 								@click="() => {
 									currentAppointmentId = slotProps.data.appointment_id;
 									finishAppointmentDialogVisible = true;
-								}" class="mr-2" :disabled="slotProps.data.status === 'F'" />
+								}" class="mr-2" :disabled="slotProps.data.status === 'F'" /> -->
 							<Button icon="pi pi-check" outlined severity="success" aria-label="Finish"
 								@click="() => {
 									currentAppointmentId = slotProps.data.appointment_id;
@@ -92,7 +92,7 @@
 							<div class="flex">
 								<Button icon="pi pi-check" outlined severity="success" aria-label="Finish"
 									@click="() => handleFinishTreatment(data.record_id)" class="mr-2" :disabled="data.treatment_status !== 'U'" />
-								<Button icon="pi pi-times" outlined severity="danger" aria-label="Cance;]l"
+								<Button icon="pi pi-times" outlined severity="danger" aria-label="Cancel"
 									@click="() => handleMarkTreatmentMissing(data.record_id)" :disabled="data.treatment_status !== 'U'" />
 							</div>
 						</template>
