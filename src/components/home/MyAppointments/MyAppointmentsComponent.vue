@@ -20,7 +20,7 @@
         <Column field="staff_name" header="Specialist Name">
           <template #body="{ data }">
             <div class="flex items-center gap-2">
-              <Avatar :image="`data:image/${loginService.getUserImgExt()};base64,${staffAvatars.get(data.staff_id)?.base64 ?? ''}`"
+              <Avatar :image="`data:image/${staffAvatars.get(data.staff_id)?.filename.split('.')[1]};base64,${staffAvatars.get(data.staff_id)?.base64 ?? ''}`"
                 shape="circle" />
               <span>{{ data.staff_name }}</span>
             </div>
@@ -208,7 +208,7 @@ import { VisibleAppointment } from './interfaces';
 import { AvatarResponse } from '@/src/services/FileService/interfaces';
 import { useToast } from 'primevue/usetoast';
 import loginService from '@/src/services/LoginService/LoginService';
-import staffScheduleService from '@/src/services/StaffService/StaffScheduleService';
+import staffScheduleService from '@/src/services/StaffService/StaffService';
 import treatmentRecordService from '@/src/services/TreatmentRecordService/TreatmentRecordService';
 import { Department, Doctor } from '@/src/services/DepatmentsService/interfaces';
 import departmentService from '@/src/services/DepatmentsService/DepartmentsService';

@@ -59,12 +59,12 @@
 					tableStyle="min-width: 50rem" class="flex-1">
 					<template #empty>
 						<div class="p-4 text-center">
-							<span class="text-lg">No tickets yet.</span>
+							<span class="text-lg">No treatments yet.</span>
 						</div>
 					</template>
 					<template #header>
 						<div class="flex flex-wrap items-center justify-between gap-2">
-							<span class="text-xl font-bold">My Appointments</span>
+							<span class="text-xl font-bold">Treatments</span>
 							<div class="flex flex-row gap-x-2">
 								<Button icon="pi pi-plus" rounded raised @click="() => {
 									fetchAllTreatmentData();

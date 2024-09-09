@@ -28,35 +28,19 @@ class PatientService {
       throw err;
     }
   }
-  // GET
-  // public async getAllDepartments(onFailure: (errorMsg: string) => void): Promise<AppointmentResponse> {
-  //   try {
-  //     const response =
-  //       await this.requestService.getWithAuth<Department[]>(
-  //         '/department/all',
-  //       );
+  
+  public async deletePatient(id: number, onSuccess: () => void, onFailure: (errMsg: string) => void): Promise<void> {
+    try {
+      await this.requestService.deleteWithAuth<void>(
+        `${this.prefix}`, { params: { id } }
+      );
 
-  //     return response?.data ?? [];
-  //   } catch (error) {
-  //     onFailure(((error as AxiosError).response?.data as any).error)
-  //     throw(error);
-  //   }
-  // }
-
-  // POST
-  // public async cancelAppointment(request: CancelAppointmentRequest, onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
-  //   try {
-  //     const response =
-  //       await this.requestService.putWithAuth<void>(
-  //         '/appointment/cancel', request
-  //       );
-
-  //     onSuccess();
-  //   } catch (error) {
-  //     onFailure(((error as AxiosError).response?.data as any).error)
-  //     throw(error);
-  //   }
-  // }
+      onSuccess();
+    } catch (err) {
+      onFailure(((err as AxiosError).response?.data as any).error);
+      throw err;
+    }
+  }
 }
 
 const patientService = new PatientService();

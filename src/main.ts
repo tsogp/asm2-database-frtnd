@@ -5,6 +5,7 @@ import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
 import App from '@/src/App.vue'
 import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice';
 import router from '@/src/router';
 import { setupAxiosInterceptors } from './services/interceptors';
 
@@ -20,6 +21,7 @@ app.use(PrimeVue, {
 });
 app.use(router);
 app.use(ToastService);
+app.use(ConfirmationService);
 app.mount('#app');
 
 setupAxiosInterceptors();

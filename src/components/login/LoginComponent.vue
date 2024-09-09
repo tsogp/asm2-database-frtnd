@@ -59,7 +59,7 @@
 							label="Repeat Password" 
 							:errorMessage="passwordError"
 						/>
-						<!-- <InputTextWrapper 
+						<InputTextWrapper 
 							v-model="firstName" 
 							id="firstName" 
 							type="text" 
@@ -76,7 +76,7 @@
 							label="Last Name"
 							placeholder="The Desirerer"
 							:errorMessage="lastNameError" 
-						/> -->
+						/>
 					</div>
 				</template>
 				<template #footer>
@@ -152,17 +152,17 @@ const validate = () => {
 			passwordError.value = '';
 		}
 
-		// if (firstName.value === '') {
-		// 	firstNameError.value = 'First Name is required';
-		// } else {
-		// 	firstNameError.value = '';
-		// }
+		if (firstName.value === '') {
+			firstNameError.value = 'First Name is required';
+		} else {
+			firstNameError.value = '';
+		}
 
-		// if (lastName.value === '') {
-		// 	lastNameError.value = 'Last Name is required';
-		// } else {
-		// 	lastNameError.value = '';
-		// }
+		if (lastName.value === '') {
+			lastNameError.value = 'Last Name is required';
+		} else {
+			lastNameError.value = '';
+		}
 	}
 };
 
@@ -203,7 +203,7 @@ const handleSignup = async () => {
     ? (signUpRole.value === SignUpRoles.PATIENT)
       ? await loginService.patientLogin(email.value, password.value, onLoginSuccess, onLoginFailure)
       : await loginService.staffLogin(email.value, password.value, onLoginSuccess, onLoginFailure)
-    : await registerService.registerPatient(email.value, password.value, onRegisterSuccess, onRegisterFailure);
+    : await registerService.registerPatient(email.value, password.value, firstName.value, lastName.value, onRegisterSuccess, onRegisterFailure);
 };
 
 </script>

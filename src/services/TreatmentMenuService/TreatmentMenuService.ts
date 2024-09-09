@@ -3,7 +3,7 @@ import requestService, {
 } from "@/src/services/RequestService";
 import { AxiosError } from "axios";
 import { DefaultPaginationRequest } from "../DefaultInterfaces";
-import { AddTreatmentMenuReq, AddTreatmentMenuRes, GetAllTreatmentMenusRes, GetTreatmentMenuByIdReq, GetTreatmentMenuByIdRes } from "./interfaces";
+import { AddTreatmentMenuReq, AddTreatmentMenuRes, EditTreatmentMenuReq, GetAllTreatmentMenusRes, GetTreatmentMenuByIdReq, GetTreatmentMenuByIdRes } from "./interfaces";
 
 class TreatmentMenuService {
   private requestService: RequestServiceType;
@@ -62,6 +62,24 @@ class TreatmentMenuService {
 
       onSuccess();
       return res.data;
+    } catch (err) {
+      onFailure(((err as AxiosError).response?.data as any).error);
+      throw err;
+    }
+  }
+
+  public async editTreatmentMenu(
+    req : EditTreatmentMenuReq,
+    onSuccess: () => void,
+    onFailure: (errMsg: string) => void
+  ): Promise<void> {
+    try {
+      const res =
+        await this.requestService.putWithAuth<void>(
+          `${this.prefix}`, req
+        );
+
+      onSuccess();
     } catch (err) {
       onFailure(((err as AxiosError).response?.data as any).error);
       throw err;

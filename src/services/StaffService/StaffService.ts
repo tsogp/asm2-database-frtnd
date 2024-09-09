@@ -1,9 +1,9 @@
 import requestService, { RequestServiceType } from "@/src/services/RequestService";
 import { AxiosError } from "axios";
-import { StaffScheduleRequest } from "./interfaces";
+import { GetAllStaffRes, StaffScheduleRequest } from "./interfaces";
 import { DefaultPaginationRequest } from "../DefaultInterfaces";
 
-class StaffScheduleService {
+class StaffService {
   private requestService: RequestServiceType;
 
   constructor() {
@@ -28,19 +28,30 @@ class StaffScheduleService {
   //     throw(error);
   //   }
   // }
-  public async getAllStaffs(request: DefaultPaginationRequest, onFailure: (errorMsg: string) => void) {
+  public async getAllStaffs(request: DefaultPaginationRequest, onFailure: (errorMsg: string) => void): Promise<GetAllStaffRes> {
     try {
       const params = request;
 
       const response =  
-        await this.requestService.getWithAuth<void>(
+        await this.requestService.getWithAuth<GetAllStaffRes>(
           '/staff/all', 
           { params }
         );
 
-      console.log(response);
+      return response.data;
+    } catch (error) {
+      onFailure(((error as AxiosError).response?.data as any).error)
+      throw(error);
+    }
+  }
 
-      return response.data ?? [];
+  public async deleteStaff(id: number, onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
+    try {
+      await this.requestService.deleteWithAuth<void>(
+        `/staff/${id}`,
+      );
+
+      onSuccess();
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error)
       throw(error);
@@ -48,6 +59,6 @@ class StaffScheduleService {
   }
 }
 
-const staffScheduleService = new StaffScheduleService();
+const staffService = new StaffService();
 
-export default staffScheduleService;
+export default staffService;

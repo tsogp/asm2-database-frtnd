@@ -121,7 +121,7 @@
         <Select id="gender" v-model="userGender" :options="userGenders" optionLabel="name" placeholder="Select you gender" class="w-full" />
         <div class="text-red-500 text-xs font-semibold" v-if="genderError?.length !== 0">{{ genderError }}</div>
       </div>
-      <div class="flex flex-col" v-if="loginService.getUserRole() !== 'patient'">
+      <div class="flex flex-col" v-if="loginService.getUserRole() === 'staff'">
         <div class="flex flex-col gap-y-2">
           <label for="dept" class="font-semibold">Department</label>
           <Select v-model="userDepartment" id="dept" :options="departmentsData" optionLabel="department_name"
@@ -226,16 +226,6 @@ const fillUpItems = () => {
         label: 'Departments',
         icon: 'pi pi-building',
         route: '/admin-departments',
-      },
-      {
-        label: 'Schedules',
-        icon: 'pi pi-calendar',
-        route: '/admin-schedule',
-      },
-      {
-        label: 'Reports',
-        icon: 'pi pi-list',
-        route: '/admin-reports',
       },
       {
         label: 'Treatments',
@@ -425,7 +415,7 @@ const sendData = async () => {
         toast.add({ severity: 'error', summary: 'Failure', detail: errorMsg, life: 5000 });
         loading.value = false;
       });
-  } else {
+  } else if (loginService.getUserRole() === 'staff') {
     let request: NewTicketBody = {
       newFirstName: userFirstName.value,
       newLastName: userLastName.value,
@@ -447,6 +437,24 @@ const sendData = async () => {
         loading.value = false;
       }
     );
+  } else {
+    let request: UpdateUserRequest = {
+      newFirstName: userFirstName.value,
+      newLastName: userLastName.value,
+      newGender: userGender.value.code ?? 'M'
+    };
+
+    await loginService.adminUpdateData(
+      request, 
+      () => {
+        toast.add({ severity: 'success', summary: 'Success', detail: 'Data updated successfully.', life: 5000 });
+        editDialogVisible.value = false;
+        loading.value = false;
+      }, 
+      (errorMsg: string) => {
+        toast.add({ severity: 'error', summary: 'Failure', detail: errorMsg, life: 5000 });
+        loading.value = false;
+      });
   }
 }
 

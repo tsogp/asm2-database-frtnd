@@ -21,6 +21,12 @@ export interface AddTreatmentMenuReq {
   treatment_cost: number;
 }
 
+export interface EditTreatmentMenuReq {
+  treatment_id: number;
+  treatment_name: string;
+  treatment_cost: number;
+}
+
 export interface AddTreatmentMenuRes {
   message: string;
 }

@@ -23,10 +23,17 @@ class LoginService {
       const userData = await this.requestService.postWithAuth<LoginResponse>('/auth/login', 
         {
           email,
-          password
+          password,
+          loginRole: 'patient',
         },
       );
       
+      // if (userData.data.role !== 'patient') {
+      //   onFailure('Invalid role');
+      //   this.user = null;
+      //   return;
+      // }
+
       setTimeout(async () => {
         const response = await this.requestService.getWithAuth<UserResponse>('/patient/myInfo');
 
@@ -39,6 +46,34 @@ class LoginService {
 
         onSuccess();
       }, 200);
+    } catch (error) {
+      onFailure(((error as AxiosError).response?.data as any).error);
+      throw error;
+    }
+  }
+
+  public async adminUpdateData(request: UpdateUserRequest, onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
+    try {
+      const userData = await this.requestService.putWithAuth<LoginResponse>('/staff', 
+        request
+      );
+
+      const response = await this.requestService.getWithAuth<StaffResponse>('/staff/my');
+
+      const imgSrc = await fileService.getStaffAvatar(
+        { mysql_id: response.data.staff_id },
+        () => console.log(`failed fetching for ${response.data.staff_id}`));
+
+      this.user = {
+        ...response.data,
+        role: userData.data.role,
+        imgSrc: imgSrc.base64,
+        imgExt: imgSrc.filename.split('.')[1]
+      };
+
+      localStorage.setItem('user', JSON.stringify(this.user));
+
+      onSuccess();
     } catch (error) {
       onFailure(((error as AxiosError).response?.data as any).error);
       throw error;
@@ -74,7 +109,8 @@ class LoginService {
       const userData = await this.requestService.postWithAuth<LoginResponse>('/auth/login', 
         {
           email,
-          password
+          password,
+          loginRole: 'staff',
         },
       );
       setTimeout(async () => {

@@ -57,6 +57,21 @@ class DepartmentService {
       throw(error);
     }
   }
+
+  public async updateDepartment(request: Department, onSuccess: () => void, onFailure: (errorMsg: string) => void): Promise<void> {
+    try {
+      const response =  
+        await this.requestService.putWithAuth<void>(
+          '/department', request
+        );
+      
+      onSuccess();
+      return response.data;
+    } catch (error) {
+      onFailure(((error as AxiosError).response?.data as any).error)
+      throw(error);
+    }
+  }
 }
 
 const departmentService = new DepartmentService();

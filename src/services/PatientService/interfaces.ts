@@ -59,7 +59,7 @@ export interface Schedule {
 }
 
 export interface GetScheduleRes {
-  restults: Schedule[];
+  results: Schedule[];
   pagination: DefaultPagination;
 }
 
