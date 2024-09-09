@@ -59,14 +59,14 @@
 							@click="(event: Event) => {
 								currentTicketId = slotProps.data.ticket_id;
 								confirmApprove(event);
-							}" :disabled="slotProps.data.ticket_status !== 'U'" />
+							}" :disabled="slotProps.data.ticket_status !== 'P'" />
 						<Button icon="pi pi-times" outlined severity="danger" aria-label="Reejct"
 							@click="(event: Event) => {
 								currentTicketId = slotProps.data.ticket_id;
 								rejectReason = '';
 								confirmDelete(event);
 								console.log(slotProps.data.ticket_id);
-							}" :disabled="slotProps.data.ticket_status !== 'U'" />
+							}" :disabled="slotProps.data.ticket_status !== 'P'" />
 						</div>
 					</template>
 				</Column>
@@ -121,6 +121,8 @@ const getTicketSeverity = (status: string) => {
       return 'danger';
 		case 'R':
 			return 'danger';
+		case 'P':
+				return 'info';
     default:
       return 'info';
   }
@@ -138,6 +140,8 @@ const getTicketStatusName = (status: string) => {
       return 'Missing';
 		case 'R':
 			return 'Rejected';
+		case 'P':
+			return 'Pending';
     default:
       return 'Upcoming';
   }
