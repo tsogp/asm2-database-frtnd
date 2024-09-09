@@ -163,7 +163,7 @@ const fetchAllAppointemnts = async () => {
 	appointmentsData.value = response.results.map(item => {
 		return {
 			...item,
-			schedule_date: dayjs(item.schedule_date),
+			schedule_date: dayjs(item.schedule_date).add(item.slot_number + 8, 'hour'),
 		}
 	});
 	totalRecords.value = response.pagination.totalRecords;
