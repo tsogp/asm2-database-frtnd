@@ -123,6 +123,8 @@ const getTicketSeverity = (status: string) => {
 			return 'danger';
 		case 'P':
 				return 'info';
+		case 'A':
+			return 'success';
     default:
       return 'info';
   }
@@ -142,6 +144,8 @@ const getTicketStatusName = (status: string) => {
 			return 'Rejected';
 		case 'P':
 			return 'Pending';
+		case 'A':
+			return 'Approved';
     default:
       return 'Upcoming';
   }
