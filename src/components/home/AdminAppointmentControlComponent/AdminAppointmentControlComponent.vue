@@ -39,9 +39,9 @@
 			<Column header="Billing">
 				<template #body="{ data }">
 					<Button icon="pi pi-file" severity="info" outlined
-						@click="() => { 
+						@click="async () => { 
 							currentAppointmentId = data.appointment_id;
-							fetchBillingData();
+							await fetchBillingData();
 							reportDialogVisible = true; 
 						}" :disabled="data.status !== 'F'"</Button>
 				</template>
@@ -264,6 +264,7 @@ const fetchBillingData = async () => {
 	console.log(billingData.value);
 	reportLoading.value = false;
 }
+
 onMounted(async () => {
 	await fetchAllAppointemnts();
 })
