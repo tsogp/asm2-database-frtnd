@@ -25,6 +25,7 @@ const routes = [
     path: '/',
     name: 'Hospital Management System',
     component: HomeComponent,
+    redirect: '/about-us',
     children: [
       {
         path: 'about-us',

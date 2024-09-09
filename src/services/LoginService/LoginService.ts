@@ -206,30 +206,30 @@ class LoginService {
   }
 
   public getUserDOB(): Date | undefined {
-    if ('date_of_birth' in this.user) {
+    if (this.user && 'date_of_birth' in this.user) {
       return new Date((this.user as UserResponse).date_of_birth);
     }
     return undefined;
   }
 
   public getUserJobType(): {code: string, name: string} | undefined {
-    if ('job_type' in this.user) {
+    if (this.user && 'job_type' in this.user) {
       return {code: (this.user as StaffResponse).job_type, name: (this.user as StaffResponse).job_type === 'D' ? 'Doctor' : 'Nurse'} 
     }
     return undefined;
   }
 
   public getUserAllergies(): string | null {
-    if ('allergies' in this.user) {
+    if (this.user && 'allergies' in this.user) {
       return (this.user as UserResponse).allergies;
     }
     return null;
   }
 
   public getUserID(): number | null {
-    if ('patient_id' in this.user) {
+    if (this.user && 'patient_id' in this.user) {
       return (this.user as UserResponse).patient_id;
-    } else if ('staff_id' in this.user) {
+    } else if (this.user && 'staff_id' in this.user) {
       return (this.user as StaffResponse).staff_id;
     }
     return null;
@@ -250,21 +250,21 @@ class LoginService {
   }
 
   public getUserSalary(): number | null {
-    if ('salary' in this.user) {
+    if (this.user && 'salary' in this.user) {
       return Number((this.user as StaffResponse).salary);
     }
     return null;
   }
   
   public getUserDepartment(): Department | null {
-    if ('department_id' in this.user) {
+    if (this.user && 'department_id' in this.user) {
       return {department_id: (this.user as StaffResponse).department_id, department_name: (this.user as StaffResponse).department_name} 
     }
     return null;
   }
   
   public getUserManagerId(): number | null {
-    if ('manager_id' in this.user) {
+    if (this.user && 'manager_id' in this.user) {
       return (this.user as StaffResponse).manager_id;
     }
     return null;
